@@ -1,0 +1,6 @@
+
+Dataset/dataset.csv
+Dataset/dataset_dummy.csv
+Dataset/dataset_giornaliero.csv
+Dataset/dataset_orario.csv
+*.csv
