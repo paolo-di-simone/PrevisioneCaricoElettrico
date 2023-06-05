@@ -1,0 +1,17 @@
+{
+    "P_CabinePower_L1": 150,
+    "P L1 WS Emergency Light": 1500,
+    "P L1 WS Light": 350,
+    "P L1 WS FanCoil": 200,
+    "P L1 WS FM": 4000,
+    "P_HeatPump": 1000,
+    "P L2 WS Emergency Light": 1700,
+    "P L2 WS Light": 400,
+    "P L2 WS FanCoil": 200,
+    "P L2 WS FM": 1300,
+    "P_CabineLight_L3": 10,
+    "P L3 WS Emergency Light": 1000,
+    "P L3 WS Light": 350,
+    "P L3 WS FanCoil": 200,
+    "P L3 WS FM": 2000
+}

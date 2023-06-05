@@ -1,0 +1,5 @@
+{
+    "L1": ["P_CabinePower_L1", "P L1 WS Emergency Light", "P L1 WS Light", "P L1 WS FanCoil", "P L1 WS FM"],
+    "L2": ["P_HeatPump", "P L2 WS Emergency Light", "P L2 WS Light", "P L2 WS FanCoil", "P L2 WS FM"],
+    "L3": ["P_CabineLight_L3", "P L3 WS Emergency Light", "P L3 WS Light", "P L3 WS FanCoil", "P L3 WS FM"]
+}

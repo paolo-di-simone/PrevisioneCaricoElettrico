@@ -1,0 +1,187 @@
+import pandas as pd
+import os
+from datetime import datetime
+import numpy as np
+import json
+
+class Preprocessing:
+
+    def __init__(self):
+        self.data_files_path = os.path.join("Preprocessing", "Dati")
+        self.dataframe_path = os.path.join("Preprocessing", "Dataset", "dataset.csv")
+        
+        with open(os.path.join("Preprocessing", "Input", "list_of_loads.json"), "r") as infile:
+            self.list_of_loads = json.loads(infile.read())
+
+        with open(os.path.join("Preprocessing", "Input", "min_power.json"), "r") as infile:
+            self.min_power = json.loads(infile.read())
+
+        with open(os.path.join("Preprocessing", "Input", "max_power.json"), "r") as infile:
+            self.max_power = json.loads(infile.read())
+
+
+    def make_timestamp(self, field, year, month, day):
+        time, ampm = field.split(" ")
+        h, m, s = time.split(":")
+        if h == "12":
+            h = "00"
+        if ampm == "PM":
+            h = str(int(h)+12)
+        dtime = datetime(int(year), int(month), int(day), int(h), int(m), int(s))
+        return str(dtime)
+    
+
+    def distance(self, d1, d2):
+        sum_of_squares = 0
+        for field in self.list_of_loads:
+            diff = d1[field] - d2[field]
+            sum_of_squares += diff ** 2
+        return np.sqrt(sum_of_squares)
+
+
+    def processing_data_interpolation(self):
+        
+        # Lettura file di dati e creazione dataframe
+        print("[0] Lettura dati")
+        list_of_df = []
+        for dir_name in os.listdir(self.data_files_path):
+            
+            dir_files = os.path.join(self.data_files_path, dir_name)
+            for filename in os.listdir(dir_files):
+
+                print(filename)
+            
+                plant, f40, year, month, day = filename.split(".")[0].split("_")
+                
+                file_path = os.path.join(dir_files, filename)
+                df_tmp = pd.read_csv(file_path, delimiter="\t")  
+
+                df_tmp["Time"] = df_tmp["Time"].apply(lambda x: self.make_timestamp(x, year, month, day))
+                df_tmp = df_tmp.set_index("Time")
+
+                df_tmp = df_tmp.loc[:, self.list_of_loads]
+
+                list_of_df.append(df_tmp)
+
+        df = pd.concat(list_of_df)
+        df.index = pd.to_datetime(df.index)
+
+        # Eliminazione outlier e inerpolazione valori nulli
+        print("[1] Eliminazione outlier e inerpolazione valori nulli")
+        for load in self.list_of_loads:
+            df[load] = df[load].where(
+                (df[load] >= self.min_power[load]) & (df[load] <= self.max_power[load]), np.nan
+            )
+            df[load] = df[load].interpolate()
+
+        # Media carichi per ogni giorno della settimana
+        print("[2] Creazione dataset mediato per ogni giorno della settimana")
+        df_mean_day_of_week = df.groupby(df.index.dayofweek).mean()
+
+        # Ricerca dei giorni più rappresentativi (che si avvicinano di più alla media)
+        print("[3] Ricerca giorni rappresentativi")
+        df_mean_day = df.resample("D").mean()
+        best_days = [("",np.inf),("",np.inf),("",np.inf),("",np.inf),("",np.inf),("",np.inf),("",np.inf)]
+        for index, row in df_mean_day.iterrows():
+            dist = self.distance(row, df_mean_day_of_week.loc[index.dayofweek])
+            if dist < best_days[index.dayofweek][1]:
+                best_days[index.dayofweek] = (str(index.year)+"-"+str(index.month)+"-"+str(index.day), dist)
+
+        # Riempimento giornate mancanti con i giorni più rappresentativi
+        print("[4] Riempimento giornate mancanti")
+        start_date = df.index.min().date()
+        end_date = df.index.max().date()
+        complete_index = pd.date_range(start=start_date, end=end_date, freq="D")
+        missing_dates = complete_index.difference(df.index.date)
+
+        list_of_df_missing_date = []
+        for miss_date in missing_dates:
+            df_tmp = df.loc[best_days[miss_date.weekday()][0]]
+            df_tmp.index = df_tmp.index.to_series().apply(
+                lambda x: x.replace(year=miss_date.year, month=miss_date.month, day=miss_date.day)
+            )
+            list_of_df_missing_date.append(df_tmp)
+        
+        df = pd.concat([df] + list_of_df_missing_date)
+        df.sort_index(inplace=True)
+                
+        # Costruzione dataset mediato orario
+        print("[5] Costruzione dataset mediato orario")
+        df_mean_hour = df.resample("H").mean()
+
+        df_mean_hour.to_csv(self.dataframe_path)
+    
+
+    def fill_empty_value(self, df, df_tmp):
+        for index, row in df.iterrows():
+            for load in self.list_of_loads:
+                if pd.isna(row[load]):
+                    df.loc[index][load] = df_tmp.loc[index.hour][load]
+        return df
+
+
+    def processing_data_mean_hour(self):
+        
+        # Lettura file di dati e creazione dataframe
+        print("[0] Lettura dati")
+        list_of_df = []
+        for dir_name in os.listdir(self.data_files_path):
+            
+            dir_files = os.path.join(self.data_files_path, dir_name)
+            for filename in os.listdir(dir_files):
+
+                print(filename)
+            
+                plant, f40, year, month, day = filename.split(".")[0].split("_")
+                
+                file_path = os.path.join(dir_files, filename)
+                df_tmp = pd.read_csv(file_path, delimiter="\t")  
+
+                df_tmp["Time"] = df_tmp["Time"].apply(lambda x: self.make_timestamp(x, year, month, day))
+                df_tmp = df_tmp.set_index("Time")
+
+                df_tmp = df_tmp.loc[:, self.list_of_loads]
+
+                list_of_df.append(df_tmp)
+
+        df = pd.concat(list_of_df)
+        df.index = pd.to_datetime(df.index)
+
+        # Eliminazione outlier
+        print("[1] Eliminazione outlier")
+        for load in self.list_of_loads:
+            df[load] = df[load].where(
+                (df[load] >= self.min_power[load]) & (df[load] <= self.max_power[load]), np.nan
+            )
+
+        # Creazione dataset mediato orario
+        print("[2] Creazione dataset mediato orario")
+        df_avg = df.resample("H").mean()
+
+        # Split dataframe in weekday-weekend
+        print("[3] Split dataframe in weekday-weekend")
+        df_weekday_avg = df_avg[df_avg.index.weekday < 5]
+        df_weekend_avg = df_avg[df_avg.index.weekday >= 5]
+        df_tmp_weekday = df[df.index.weekday < 5]
+        df_tmp_weekend = df[df.index.weekday >= 5]
+
+        # Media carichi per ogni orario
+        print("[4] Creazione dataset mediato per ogni ora del giorno")
+        df_weekday_avg_hour = df_tmp_weekday.groupby(df_tmp_weekday.index.hour).mean()
+        df_weekend_avg_hour = df_tmp_weekend.groupby(df_tmp_weekend.index.hour).mean()
+
+        # Sostituzione valori np.nan con valori medi
+        print("[5] Ricerca giorni rappresentativi")
+        df_weekday_avg = self.fill_empty_value(df_weekday_avg, df_weekday_avg_hour)
+        df_weekend_avg = self.fill_empty_value(df_weekend_avg, df_weekend_avg_hour)
+                
+        # Costruzione dataset mediato orario
+        print("[6] Costruzione dataset mediato orario")
+        df_avg_hour = pd.concat([df_weekday_avg, df_weekend_avg])
+        df_avg_hour.sort_index(inplace=True)
+
+        df_avg_hour.to_csv(self.dataframe_path)
+        
+
+if __name__ == "__main__":
+    Preprocessing().processing_data_mean_hour()

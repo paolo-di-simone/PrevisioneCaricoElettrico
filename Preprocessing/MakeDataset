@@ -1,0 +1,37 @@
+import os
+import json
+import pandas as pd
+
+class MakeDataset:
+
+    def __init__(self):
+        self.dataframe_path = os.path.join("Preprocessing", "Dataset", "dataset.csv")
+        self.dataframe_training_path = os.path.join("Preprocessing", "Dataset", "dataset_training.csv")
+
+        with open(os.path.join("Preprocessing", "Input", "loads_lines.json"), "r") as infile:
+            self.loads_lines = json.loads(infile.read())
+
+        with open(os.path.join("Preprocessing", "Input", "holidays.json"), "r") as infile:
+            self.holidays = json.loads(infile.read())
+
+        self.other_feature = ["DayOfWeek", "Month", "Day", "Hour"]
+
+    def add_other_feature(self):
+        df_for_training = pd.DataFrame()
+
+        df = pd.read_csv(self.dataframe_path, index_col="Time")
+        df.index = pd.to_datetime(df.index)
+
+        for line, loads in self.loads_lines.items():
+            df_for_training[line] = df[loads].sum(axis=1)
+
+        df_for_training["DayOfWeek"] = df_for_training.index.to_series().apply(lambda x: x.dayofweek)
+        df_for_training["Month"] = df_for_training.index.to_series().apply(lambda x: x.month)
+        df_for_training["Day"] = df_for_training.index.to_series().apply(lambda x: x.day)
+        df_for_training["Hour"] = df_for_training.index.to_series().apply(lambda x: x.hour)
+
+        df_for_training.to_csv(self.dataframe_training_path)
+
+
+if __name__ == "__main__":
+    MakeDataset().add_other_feature()
