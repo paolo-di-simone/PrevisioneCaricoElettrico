@@ -1,17 +1,17 @@
 {
-    "P_CabinePower_L1": 50,
-    "P L1 WS Emergency Light": 150,
-    "P L1 WS Light": 200,
+    "P_CabinePower_L1": 0,
+    "P L1 WS Emergency Light": 0,
+    "P L1 WS Light": 0,
     "P L1 WS FanCoil": 0,
     "P L1 WS FM": 0,
     "P_HeatPump": 0,
-    "P L2 WS Emergency Light": 200,
-    "P L2 WS Light": 200,
+    "P L2 WS Emergency Light": 0,
+    "P L2 WS Light": 0,
     "P L2 WS FanCoil": 0,
     "P L2 WS FM": 0,
     "P_CabineLight_L3": 0,
-    "P L3 WS Emergency Light": 200,
-    "P L3 WS Light": 250,
+    "P L3 WS Emergency Light": 0,
+    "P L3 WS Light": 0,
     "P L3 WS FanCoil": 0,
-    "P L3 WS FM": 200
+    "P L3 WS FM": 0
 }
