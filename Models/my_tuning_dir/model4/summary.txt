@@ -1,0 +1,86 @@
+Results summary
+Results in my_tuning_dir\model4
+Showing 10 best trials
+Objective(name="val_mape", direction="min")
+
+Trial 02 summary
+Hyperparameters:
+dropout_rate: 0.1
+regularizer_type: none
+n_neurons: 56
+Score: 15.58639144897461
+
+Trial 01 summary
+Hyperparameters:
+dropout_rate: 0.1
+regularizer_type: L2
+regularizer_param: 0.1
+regularization_layer: fc_only
+n_neurons: 64
+Score: 16.157129287719727
+
+Trial 00 summary
+Hyperparameters:
+dropout_rate: 0.30000000000000004
+regularizer_type: L2
+regularizer_param: 0.1
+regularization_layer: fc_only
+n_neurons: 24
+Score: 16.255111694335938
+
+Trial 04 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: none
+n_neurons: 24
+Score: 16.61966323852539
+
+Trial 12 summary
+Hyperparameters:
+dropout_rate: 0.30000000000000004
+regularizer_type: none
+n_neurons: 56
+Score: 17.473421096801758
+
+Trial 14 summary
+Hyperparameters:
+dropout_rate: 0.4
+regularizer_type: L1
+regularizer_param: 0.1
+regularization_layer: fc_only
+n_neurons: 40
+Score: 21.681631088256836
+
+Trial 05 summary
+Hyperparameters:
+dropout_rate: 0.4
+regularizer_type: L1
+regularizer_param: 0.001
+regularization_layer: all
+n_neurons: 40
+Score: 26.53400421142578
+
+Trial 08 summary
+Hyperparameters:
+dropout_rate: 0.4
+regularizer_type: none
+n_neurons: 16
+Score: 27.08820915222168
+
+Trial 06 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: L1
+regularizer_param: 0.001
+regularization_layer: all
+n_neurons: 8
+Score: 27.21415138244629
+
+Trial 09 summary
+Hyperparameters:
+dropout_rate: 0.30000000000000004
+regularizer_type: L1
+regularizer_param: 0.01
+regularization_layer: all
+n_neurons: 64
+Score: 27.2639217376709

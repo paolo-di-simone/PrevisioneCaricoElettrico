@@ -1,0 +1,5 @@
+{
+    "dropout_rate": 0.1,
+    "regularizer_type": "none",
+    "n_neurons": 56
+}

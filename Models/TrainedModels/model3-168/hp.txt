@@ -1,0 +1,7 @@
+dropout_rate = 0.5
+regularizer = L1(0.01)
+all
+learning_rate = 0.01
+
+time_steps = 7 * 24
+dim_other_feature = 24 + 7 + 12 + 1

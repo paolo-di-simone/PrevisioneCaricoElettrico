@@ -1,0 +1,6 @@
+{
+    "dropout_rate": 0.1,
+    "regularizer_type": "L2",
+    "regularizer_param": 0.1,
+    "regularization_layer": "fc_only"
+}

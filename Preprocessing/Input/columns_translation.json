@@ -1,0 +1,20 @@
+{
+    "P_CabinePower_L1": "Potenza di cabina L1",
+    "P L1 WS Emergency Light": "Luci di emergenza L1",
+    "P L1 WS Light": "Luci degli uffici L1",
+    "P L1 WS FanCoil": "Fan coil L1",
+    "P L1 WS FM": "Forza motrice L1",
+    "P_HeatPump": "Pompa di calore L2",
+    "P L2 WS Emergency Light": "Luci di emergenza L2",
+    "P L2 WS Light": "Luci degli uffici L2",
+    "P L2 WS FanCoil": "Fan coil L2",
+    "P L2 WS FM": "Forza motrice L2",
+    "P_CabineLight_L3": "Luci di cabina L3",
+    "P L3 WS Emergency Light": "Luci di emergenza L3",
+    "P L3 WS Light": "Luci degli uffici L3",
+    "P L3 WS FanCoil": "Fan coil L3",
+    "P L3 WS FM": "Forza motrice L3",
+    "Room Temperature": "Temperatura", 
+    "Ambient Air Temperature": "Temperatura",
+    "Temperature": "Temperatura"
+}

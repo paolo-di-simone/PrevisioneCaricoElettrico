@@ -1,0 +1,70 @@
+Results summary
+Results in my_tuning_dir\model3
+Showing 10 best trials
+Objective(name="val_mape", direction="min")
+
+Trial 13 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: none
+Score: 26.503631591796875
+
+Trial 10 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: L1
+regularizer_param: 0.01
+regularization_layer: all
+Score: 26.819961547851562
+
+Trial 08 summary
+Hyperparameters:
+dropout_rate: 0.30000000000000004
+regularizer_type: none
+Score: 27.313159942626953
+
+Trial 12 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: none
+Score: 27.428619384765625
+
+Trial 03 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: none
+Score: 27.5324649810791
+
+Trial 06 summary
+Hyperparameters:
+dropout_rate: 0.1
+regularizer_type: none
+Score: 28.160106658935547
+
+Trial 01 summary
+Hyperparameters:
+dropout_rate: 0.2
+regularizer_type: L2
+regularizer_param: 0.001
+regularization_layer: all
+Score: 28.179615020751953
+
+Trial 11 summary
+Hyperparameters:
+dropout_rate: 0.4
+regularizer_type: L2
+regularizer_param: 0.001
+regularization_layer: all
+Score: 28.350332260131836
+
+Trial 00 summary
+Hyperparameters:
+dropout_rate: 0.4
+regularizer_type: none
+Score: 28.471166610717773
+
+Trial 14 summary
+Hyperparameters:
+dropout_rate: 0.5
+regularizer_type: none
+Score: 28.500810623168945

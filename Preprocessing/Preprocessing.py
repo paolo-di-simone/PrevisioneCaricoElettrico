@@ -10,9 +10,17 @@ class Preprocessing:
         self.data_files_path = os.path.join("Preprocessing", "Dati")
         self.process_df_path = os.path.join("Preprocessing", "Dataset", "dataset_processed.csv")
         self.unprocess_df_path = os.path.join("Preprocessing", "Dataset", "dataset_unprocessed.csv")
+
+        self.best_file_path = os.path.join("Preprocessing", "Output", "best_file.txt")
+        self.deleted_days = os.path.join("Preprocessing", "Output", "deleted_days.json")
+
+        with open(os.path.join("Preprocessing", "Input", "columns_translation.json"), "r") as infile:
+            self.columns_translation = json.loads(infile.read())
         
         with open(os.path.join("Preprocessing", "Input", "list_of_loads.json"), "r") as infile:
             self.list_of_loads = json.loads(infile.read())
+
+        self.other_feature = ["Temperatura"]
 
         with open(os.path.join("Preprocessing", "Input", "min_power.json"), "r") as infile:
             self.min_power = json.loads(infile.read())
@@ -58,15 +66,19 @@ class Preprocessing:
                 file_path = os.path.join(dir_files, filename)
                 df_tmp = pd.read_csv(file_path, delimiter="\t")  
 
-                df_tmp["Time"] = df_tmp["Time"].apply(lambda x: self.make_timestamp(x, year, month, day))
-                df_tmp = df_tmp.set_index("Time")
+                df_tmp["Timestamp"] = df_tmp["Time"].apply(lambda x: self.make_timestamp(x, year, month, day))
+                df_tmp = df_tmp.set_index("Timestamp")
+                
+                df_tmp = df_tmp.rename(columns=self.columns_translation)
 
-                df_tmp = df_tmp.loc[:, self.list_of_loads]
+                df_tmp = df_tmp.loc[:, self.list_of_loads + self.other_feature]
 
                 list_of_df.append(df_tmp)
 
         self.df = pd.concat(list_of_df)
         self.df.index = pd.to_datetime(self.df.index)
+
+        self.df.to_csv("prova.csv")
 
 
     def delete_outlier(self):
@@ -84,7 +96,11 @@ class Preprocessing:
             if dist < self.best_days[index.dayofweek][1]:
                 self.best_days[index.dayofweek] = (str(index.year)+"-"+str(index.month)+"-"+str(index.day), dist)
         
+        with open(self.best_file_path, "w") as outfile:
+            for item in self.best_days:
+                outfile.write("%s\n" % str(item))
     
+
     def fill_missing_days(self):
         start_date = self.df.index.min().date()
         end_date = self.df.index.max().date()
@@ -150,17 +166,13 @@ class Preprocessing:
         # Riempimento giornate mancanti con i giorni più rappresentativi
         print("[3] Riempimento giornate mancanti con i giorni più rappresentativi")
         self.fill_missing_days()
-
-        # Riempimento outlier eliminati e costruzione dataset mediato orario
-        print("[3] Riempimento outlier eliminati e costruzione dataset mediato orario")
-        self.fill_missing_days()
                 
-        # Costruzione dataset mediato orario
-        print("[5] Costruzione dataset mediato orario")
+        # Riempimento outlier eliminati e costruzione dataset mediato orario
+        print("[4] Riempimento outlier eliminati e costruzione dataset mediato orario")
         self.fill_deleted_outlier()
 
         # Salvataggio dataframe
-        print("[6] Salvataggio dataframe in " + str(self.process_df_path))
+        print("[5] Salvataggio dataframe in " + str(self.process_df_path))
         self.df_avg_hour.to_csv(self.process_df_path)
        
     
@@ -176,7 +188,3 @@ class Preprocessing:
         # Salvataggio dataframe
         print("[2] Salvataggio dataframe in " + str(self.unprocess_df_path))
         df_avg.to_csv(self.unprocess_df_path)
-
-        
-if __name__ == "__main__":
-    Preprocessing().make_process_dataset()
