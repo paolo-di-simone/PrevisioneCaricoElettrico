@@ -1,4 +1,0 @@
-{
-    "dropout_rate": 0.5,
-    "regularizer_type": "none"
-}
