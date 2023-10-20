@@ -190,12 +190,13 @@ def plot_multiple_distribution(df, fields, start_point, end_point, dim, title, x
     plt.show()
 
 
-def plot_distribution(df, fields, start_point, end_point, dim, title, xlabel, ylabel, base_path=None, marker=False, colors=None, linewidth=2):
+def plot_distribution(df, fields, start_point, end_point, dim, title, xlabel, ylabel, base_path=None, marker=False, colors=None, linewidth=2, grid=True):
         
     df_tmp = df.loc[start_point:end_point]
     
     plt.figure(figsize=dim) 
-    plt.grid()
+    if grid:
+        plt.grid()
     
     plt.title(title)
     plt.xlabel(xlabel)
@@ -274,7 +275,7 @@ def plot_history(h, c1, c2, dim, base_path=None):
     plt.grid()
     plt.plot(h["loss"], color=c1, linewidth="3", marker='o', markersize="5")
     plt.plot(h["val_loss"], color=c2, linewidth="3", marker='o', markersize="5")
-    plt.ylabel("Loss (MSE)")
+    plt.ylabel("MSE (loss)")
     plt.xlabel("Epoca")
     plt.legend(["Training set", "Validation set"], loc="upper right")
 	
